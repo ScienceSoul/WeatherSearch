@@ -1,0 +1,9 @@
+# Mac OX S
+*.DS_Store
+
+# XCode
+WeatherSearch.xcodeproj/project.xcworkspace/*
+WeatherSearch.xcodeproj/xcuserdata/*
+
+gribapi
+#params/**/*.dat
