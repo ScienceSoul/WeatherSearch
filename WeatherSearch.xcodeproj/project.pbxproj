@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		734B83591F61952400008C1D /* libgrib_api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 734B83581F61952400008C1D /* libgrib_api.a */; };
+		734B835D1F619A1900008C1D /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 734B835C1F619A1900008C1D /* main.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		734B834D1F61930800008C1D /* WeatherSearch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WeatherSearch; sourceTree = BUILT_PRODUCTS_DIR; };
 		734B83581F61952400008C1D /* libgrib_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgrib_api.a; path = gribapi/lib/libgrib_api.a; sourceTree = "<group>"; };
+		734B835C1F619A1900008C1D /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = src/main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		734B835A1F6197EB00008C1D /* src */ = {
 			isa = PBXGroup;
 			children = (
+				734B835C1F619A1900008C1D /* main.c */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				734B835D1F619A1900008C1D /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
