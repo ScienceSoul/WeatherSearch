@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		734B83511F61930800008C1D /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 734B83501F61930800008C1D /* main.c */; };
+		734B83591F61952400008C1D /* libgrib_api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 734B83581F61952400008C1D /* libgrib_api.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		734B834D1F61930800008C1D /* WeatherSearch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WeatherSearch; sourceTree = BUILT_PRODUCTS_DIR; };
-		734B83501F61930800008C1D /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		734B83581F61952400008C1D /* libgrib_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgrib_api.a; path = gribapi/lib/libgrib_api.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				734B83591F61952400008C1D /* libgrib_api.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +42,10 @@
 		734B83441F61930800008C1D = {
 			isa = PBXGroup;
 			children = (
-				734B834F1F61930800008C1D /* WeatherSearch */,
+				734B835A1F6197EB00008C1D /* src */,
+				734B835B1F6197F200008C1D /* include */,
 				734B834E1F61930800008C1D /* Products */,
+				734B83571F61952400008C1D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,12 +57,26 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		734B834F1F61930800008C1D /* WeatherSearch */ = {
+		734B83571F61952400008C1D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				734B83501F61930800008C1D /* main.c */,
+				734B83581F61952400008C1D /* libgrib_api.a */,
 			);
-			path = WeatherSearch;
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		734B835A1F6197EB00008C1D /* src */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		734B835B1F6197F200008C1D /* include */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,7 +137,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				734B83511F61930800008C1D /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +236,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 65WT6FN4B4;
+				HEADER_SEARCH_PATHS = /Users/seddikhakime/Documents/WeatherSearch/gribapi/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/gribapi/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -228,6 +249,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 65WT6FN4B4;
+				HEADER_SEARCH_PATHS = /Users/seddikhakime/Documents/WeatherSearch/gribapi/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/gribapi/lib",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
