@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		734B83591F61952400008C1D /* libgrib_api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 734B83581F61952400008C1D /* libgrib_api.a */; };
 		734B835D1F619A1900008C1D /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 734B835C1F619A1900008C1D /* main.c */; };
+		734B83661F67956500008C1D /* Utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 734B83641F67956500008C1D /* Utils.c */; };
+		734B83701F699EF300008C1D /* CreateRecordDB.c in Sources */ = {isa = PBXBuildFile; fileRef = 734B836F1F699EF300008C1D /* CreateRecordDB.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +29,11 @@
 		734B834D1F61930800008C1D /* WeatherSearch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WeatherSearch; sourceTree = BUILT_PRODUCTS_DIR; };
 		734B83581F61952400008C1D /* libgrib_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgrib_api.a; path = gribapi/lib/libgrib_api.a; sourceTree = "<group>"; };
 		734B835C1F619A1900008C1D /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = src/main.c; sourceTree = "<group>"; };
+		734B83641F67956500008C1D /* Utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Utils.c; path = src/Utils.c; sourceTree = "<group>"; };
+		734B83681F6796DC00008C1D /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utils.h; path = include/Utils.h; sourceTree = "<group>"; };
+		734B836A1F67F27E00008C1D /* Defs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Defs.h; path = include/Defs.h; sourceTree = "<group>"; };
+		734B836E1F699E5600008C1D /* CreateRecordDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CreateRecordDB.h; path = include/CreateRecordDB.h; sourceTree = "<group>"; };
+		734B836F1F699EF300008C1D /* CreateRecordDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CreateRecordDB.c; path = src/CreateRecordDB.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +78,8 @@
 			isa = PBXGroup;
 			children = (
 				734B835C1F619A1900008C1D /* main.c */,
+				734B836F1F699EF300008C1D /* CreateRecordDB.c */,
+				734B83641F67956500008C1D /* Utils.c */,
 			);
 			name = src;
 			sourceTree = "<group>";
@@ -78,6 +87,9 @@
 		734B835B1F6197F200008C1D /* include */ = {
 			isa = PBXGroup;
 			children = (
+				734B836A1F67F27E00008C1D /* Defs.h */,
+				734B836E1F699E5600008C1D /* CreateRecordDB.h */,
+				734B83681F6796DC00008C1D /* Utils.h */,
 			);
 			name = include;
 			sourceTree = "<group>";
@@ -140,6 +152,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				734B83661F67956500008C1D /* Utils.c in Sources */,
+				734B83701F699EF300008C1D /* CreateRecordDB.c in Sources */,
 				734B835D1F619A1900008C1D /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,6 +295,7 @@
 				734B83561F61930800008C1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

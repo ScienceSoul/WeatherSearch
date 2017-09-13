@@ -5,5 +5,7 @@
 WeatherSearch.xcodeproj/project.xcworkspace/*
 WeatherSearch.xcodeproj/xcuserdata/*
 
+queries.dat
 gribapi
-#params/**/*.dat
+data
+params/**/*.dat
