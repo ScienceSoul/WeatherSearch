@@ -34,6 +34,7 @@
 		734B836A1F67F27E00008C1D /* Defs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Defs.h; path = include/Defs.h; sourceTree = "<group>"; };
 		734B836E1F699E5600008C1D /* CreateRecordDB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CreateRecordDB.h; path = include/CreateRecordDB.h; sourceTree = "<group>"; };
 		734B836F1F699EF300008C1D /* CreateRecordDB.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CreateRecordDB.c; path = src/CreateRecordDB.c; sourceTree = "<group>"; };
+		734B83731F69A58300008C1D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +52,7 @@
 		734B83441F61930800008C1D = {
 			isa = PBXGroup;
 			children = (
+				734B83731F69A58300008C1D /* README.md */,
 				734B835A1F6197EB00008C1D /* src */,
 				734B835B1F6197F200008C1D /* include */,
 				734B834E1F61930800008C1D /* Products */,
