@@ -14,6 +14,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <stdbool.h>
+#include "Defs.h"
 
 #define PROGRAM_NAME "WeatherSearch"
 
@@ -27,6 +28,7 @@ void __attribute__((overloadable)) warning(char head[_Nonnull], char message[_No
 
 void __attribute__((overloadable)) parseArgument(const char * _Nonnull argument, char * _Nonnull value, size_t * _Nonnull len);
 
-char * _Nullable * _Nullable loadSearchableKeys(size_t * _Nonnull number_keys);
+char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys);
+record * _Nullable getQueries(char * _Nonnull search_input_file);
 
 #endif /* Utils_h */

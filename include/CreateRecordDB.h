@@ -11,7 +11,6 @@
 
 #include "grib_api.h"
 #include "Utils.h"
-#include "Defs.h"
 
 #endif /* CreateRecordDB_h */
 

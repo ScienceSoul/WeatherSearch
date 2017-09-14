@@ -50,6 +50,7 @@
       customWorkingDirectory = "/Users/seddikhakime/Documents/WeatherSearch"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      enableAddressSanitizer = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
@@ -64,7 +65,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/seddikhakime/Documents/WeatherSearch/data/gfs.t00z.pgrb2.1p00.f000.grd"
+            argument = "queries.dat"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

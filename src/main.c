@@ -15,18 +15,19 @@ bool UPDATE_RECORDS = false;
 char **entry_keys = NULL;
 size_t number_keys;
 
-record **db = NULL;
+directory_node *store = NULL;
+record *queries = NULL;
 
 void init(void) {
     
-    entry_keys = loadSearchableKeys(&number_keys);
+    entry_keys = getSearchableKeys(&number_keys);
     if (entry_keys == NULL) {
         fatal(PROGRAM_NAME, "problem loadind the keys definition file.");
     }
     fprintf(stdout, "%s: number of keys used to build the data records: %d.\n", PROGRAM_NAME, (int)number_keys);
     for (int i=0; i<number_keys; i++) {
         char *str = &entry_keys[i][0];
-        printf("key: %s\n", str);
+        fprintf(stdout, "key: %s\n", str);
     }
     
     CreateRecordDB();
@@ -36,8 +37,20 @@ int main(int argc, const char * argv[]) {
     
     
     init();
+    queries = getQueries((char *)argv[1]);
+    record *q_pt = queries;
+    while (q_pt != NULL) {
+        dictionary *kv_pt = q_pt->key_value;
+        while (kv_pt != NULL) {
+            printf("%s:%s.\n", kv_pt->key, kv_pt->value);
+            kv_pt = kv_pt->next;
+        }
+        q_pt = q_pt->next;
+    }
+
 
     free(entry_keys);
-    free(db);
+    free(store);
+    //free(queries);
     return 0;
 }

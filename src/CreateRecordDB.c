@@ -21,26 +21,9 @@ bool isValidFile(char *name) {
     return valid;
 }
 
-record * _Nonnull allocateRecord(void) {
-    
-    record *r = (record *)malloc(sizeof(record));
-    *r = (record){.record_id=0, .number_key_values=0, .key_value=NULL, .next=NULL, .previous=NULL};
-    bzero(r->file, 128);
-    return r;
-}
-
-dictionary * _Nonnull allocateDictionary(void) {
-    
-    dictionary *d = (dictionary *)malloc(sizeof(dictionary));
-    *d = (dictionary){.next=NULL, .previous=NULL};
-    bzero(d->key, MAX_VAL_LEN);
-    bzero(d->value, MAX_VAL_LEN);
-    return d;
-}
-
 void CreateRecordDB(void) {
     
-    extern record **db;
+    extern directory_node *store;
     extern char **entry_keys;
     extern size_t number_keys;
     
@@ -48,9 +31,9 @@ void CreateRecordDB(void) {
     
     DIR *dir = NULL;
     FILE *in = NULL;
-    char dirname[128];
-    char filename[128];
-    char key_value[MAX_VAL_LEN];
+    char dirname[MAX_DIR_FILE_STRING];
+    char filename[MAX_DIR_FILE_STRING];
+    char key_value[MAX_KEY_VALUE_STRING];
     
     grib_handle *h = NULL;
     struct dirent *file = NULL;
@@ -75,31 +58,44 @@ void CreateRecordDB(void) {
         }
     }
     
-    char data_directory_name[64];
+    char data_directory_name[MAX_DIR_FILE_STRING];
     size_t number_files = 0;
+    bool first_dir_node = true;
+    directory_node *d_head = NULL, *d_pos = NULL, *d_pt = NULL;
     do {
         fscanf(data_directories,"%s\n", data_directory_name);
         
-        char path_to_directory[128];
+        char path_to_directory[MAX_DIR_FILE_STRING];
         memset(path_to_directory, 0, sizeof(path_to_directory));
-        stpncpy(path_to_directory, "./data/", strlen("./data/"));
+        stpcpy(path_to_directory, "./data/");
         strcat(path_to_directory, data_directory_name);
         dir = opendir(path_to_directory);
         if (!dir) {
-            stpncpy(path_to_directory, "../data/", strlen("../data/"));
+            stpcpy(path_to_directory, "../data/");
             strcat(path_to_directory, data_directory_name);
             dir = opendir(path_to_directory);
             if (!dir) {
                 fprintf(stderr, "%s: can't not find the data directory %s.\n", PROGRAM_NAME, path_to_directory);
                 fatal(PROGRAM_NAME);
             } else {
-                stpncpy(dirname, path_to_directory, strlen(path_to_directory));
+                stpcpy(dirname, path_to_directory);
             }
         } else {
-            stpncpy(dirname, path_to_directory, strlen(path_to_directory));
+            stpcpy(dirname, path_to_directory);
         }
         
         fprintf(stdout, "%s: going to directory %s.\n", PROGRAM_NAME, dirname);
+        
+        // Allocate directory node
+        if (first_dir_node) {
+            d_head = allocateDirectoryNode();
+            store = d_head;
+            d_pos = d_head;
+            d_pt = d_head;
+            first_dir_node = false;
+        } else {
+            d_pt = allocateDirectoryNode();
+        }
         
         number_files = 0;
         while ((file = readdir(dir)) != NULL) {
@@ -113,8 +109,9 @@ void CreateRecordDB(void) {
         }
         fprintf(stdout, "%s: %d file(s) found in data directory.\n", PROGRAM_NAME, (int)number_files);
         
-        // Allocate memory for the data base of records
-        db = (record **)malloc(number_files*sizeof(record *));
+        // Allocate memory for the data base of records in current directory node
+        d_pt->db = (record **)malloc(number_files*sizeof(record *));
+        d_pt->number_files = number_files;
         
         rewinddir(dir);
         int idx = 0;
@@ -126,7 +123,7 @@ void CreateRecordDB(void) {
                 continue;
             }
             memset(filename, 0, sizeof(filename));
-            stpncpy(filename, dirname, strlen(dirname));
+            stpcpy(filename, dirname);
             strcat(filename, "/");
             strcat(filename, file->d_name);
             in = fopen(filename, "r");
@@ -151,15 +148,15 @@ void CreateRecordDB(void) {
                 if (first_record) {
                     r_head = allocateRecord();
                     r_head->record_id = grib_count;
-                    stpncpy(r_head->file, filename, strlen(filename));
+                    stpcpy(r_head->file, filename);
                     
                     r_pos = r_head;
                     rec_pt = r_head;
                     first_record = false;
                 } else {
                     rec_pt = allocateRecord();
-                    rec_pt->record_id = grib_count;
-                    stpncpy(rec_pt->file, filename, strlen(filename));
+                    rec_pt->record_id = grib_count;;
+                    stpcpy(rec_pt->file, filename);
                 }
                 
                 for (int i=0; i<number_keys; i++) {
@@ -190,20 +187,20 @@ void CreateRecordDB(void) {
                         while (grib_keys_iterator_next(kiter)) {
                             const char *name = grib_keys_iterator_get_name(kiter);
                             if (strcmp(name, key) == 0) {
-                                size_t vlen = MAX_VAL_LEN;
+                                size_t vlen = MAX_KEY_VALUE_STRING;
                                 bzero(key_value, vlen);
                                 GRIB_CHECK(grib_get_string(h, name, key_value, &vlen), name);
                                 
                                 if (rec_pt->number_key_values == 0) {
                                     rec_pt->key_value = allocateDictionary();
-                                    stpncpy(rec_pt->key_value->key, key, strlen(name));
-                                    stpncpy(rec_pt->key_value->value, key_value, strlen(key_value));
+                                    stpcpy(rec_pt->key_value->key, key);
+                                    stpcpy(rec_pt->key_value->value, key_value);
                                     dict_pt = rec_pt->key_value;
                                     rec_pt->number_key_values++;
                                 } else {
                                     dictionary *new_key_value = allocateDictionary();
-                                    stpncpy(new_key_value->key, key, strlen(name));
-                                    stpncpy(new_key_value->value, key_value, strlen(key_value));
+                                    stpcpy(new_key_value->key, key);
+                                    stpcpy(new_key_value->value, key_value);
                                     new_key_value->previous = dict_pt;
                                     dict_pt->next = new_key_value;
                                     dict_pt = new_key_value;
@@ -230,30 +227,39 @@ void CreateRecordDB(void) {
                 grib_handle_delete(h);
                 grib_count++;
             }
-            db[idx] = r_head;
+            d_pt->db[idx] = r_head;
             idx++;
             fclose(in);
         }
         
         if (dir) closedir(dir);
         
+        if (!first_dir_node) {
+            d_pos->next = d_pt;
+            d_pt->previous = d_pos;
+            d_pos = d_pt;
+        }
+        
     } while (!feof(data_directories));
     
     
-    for (int i=0; i<number_files; i++) {
-        record *r = db[i];
-        record *r_pt = r;
-        while (r_pt != NULL) {
-            printf("record number: %d from file: %s.\n", r_pt->record_id, r_pt->file);
-            dictionary *dic_pt = r_pt->key_value;
-            while (dic_pt != NULL) {
-                printf("key: %s value:%s.\n", dic_pt->key, dic_pt->value);
-                dic_pt = dic_pt->next;
+    d_pt = store;
+    while (d_pt != NULL) {
+        for (int i=0; i<d_pt->number_files; i++) { // Loop files in directory
+            record *r = d_pt->db[i];
+            record *r_pt = r;
+            while (r_pt != NULL) { // Loop through records in file
+                printf("record number: %d from file: %s.\n", r_pt->record_id, r_pt->file);
+                dictionary *dic_pt = r_pt->key_value;
+                while (dic_pt != NULL) { // Loop keys records in record
+                    printf("key: %s value:%s.\n", dic_pt->key, dic_pt->value);
+                    dic_pt = dic_pt->next;
+                }
+                r_pt = r_pt->next;
             }
-            r_pt = r_pt->next;
         }
+        d_pt = d_pt->next;
     }
-    
     
     // Loop through handles of messages in a file and
     // display keys for each
