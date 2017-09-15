@@ -29,6 +29,7 @@ typedef struct record {
     int record_id;
     int number_key_values;
     char file[MAX_DIR_FILE_STRING];
+    char directory[MAX_DIR_FILE_STRING];
     dictionary * _Nullable key_value;
     struct record * _Nullable next;
     struct record *_Nullable previous;

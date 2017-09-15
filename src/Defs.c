@@ -16,7 +16,8 @@ record * _Nonnull allocateRecord(void) {
     
     record *r = (record *)malloc(sizeof(record));
     *r = (record){.record_id=0, .number_key_values=0, .key_value=NULL, .next=NULL, .previous=NULL};
-    bzero(r->file, 128);
+    bzero(r->file, MAX_DIR_FILE_STRING);
+    bzero(r->directory, MAX_DIR_FILE_STRING);
     return r;
 }
 

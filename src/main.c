@@ -22,9 +22,9 @@ void init(void) {
     
     entry_keys = getSearchableKeys(&number_keys);
     if (entry_keys == NULL) {
-        fatal(PROGRAM_NAME, "problem loadind the keys definition file.");
+        fatal(PROGRAM_NAME, "problem loading the keys definition file.");
     }
-    fprintf(stdout, "%s: number of keys used to build the data records: %d.\n", PROGRAM_NAME, (int)number_keys);
+    fprintf(stdout, "%s: number of keys used in the record DB: %d.\n", PROGRAM_NAME, (int)number_keys);
     for (int i=0; i<number_keys; i++) {
         char *str = &entry_keys[i][0];
         fprintf(stdout, "key: %s\n", str);
@@ -37,7 +37,8 @@ int main(int argc, const char * argv[]) {
     
     
     init();
-    queries = getQueries((char *)argv[1]);
+    const char *keyword = "query";
+    queries = getRecordsOrQueries(keyword);
     record *q_pt = queries;
     while (q_pt != NULL) {
         dictionary *kv_pt = q_pt->key_value;

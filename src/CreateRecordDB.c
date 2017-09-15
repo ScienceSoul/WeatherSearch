@@ -68,10 +68,16 @@ void CreateRecordDB(void) {
         char path_to_directory[MAX_DIR_FILE_STRING];
         memset(path_to_directory, 0, sizeof(path_to_directory));
         stpcpy(path_to_directory, "./data/");
+        if (strlen(path_to_directory)+strlen(data_directory_name) > MAX_DIR_FILE_STRING) {
+            fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+        }
         strcat(path_to_directory, data_directory_name);
         dir = opendir(path_to_directory);
         if (!dir) {
             stpcpy(path_to_directory, "../data/");
+            if (strlen(path_to_directory)+strlen(data_directory_name) > MAX_DIR_FILE_STRING) {
+                fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+            }
             strcat(path_to_directory, data_directory_name);
             dir = opendir(path_to_directory);
             if (!dir) {
@@ -124,7 +130,13 @@ void CreateRecordDB(void) {
             }
             memset(filename, 0, sizeof(filename));
             stpcpy(filename, dirname);
+            if (strlen(filename)+strlen("/") > MAX_DIR_FILE_STRING) {
+                fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+            }
             strcat(filename, "/");
+            if (strlen(filename)+strlen(file->d_name) > MAX_DIR_FILE_STRING) {
+                fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+            }
             strcat(filename, file->d_name);
             in = fopen(filename, "r");
             if (!in) {
@@ -149,6 +161,7 @@ void CreateRecordDB(void) {
                     r_head = allocateRecord();
                     r_head->record_id = grib_count;
                     stpcpy(r_head->file, filename);
+                    stpcpy(r_head->directory, data_directory_name);
                     
                     r_pos = r_head;
                     rec_pt = r_head;
@@ -157,6 +170,7 @@ void CreateRecordDB(void) {
                     rec_pt = allocateRecord();
                     rec_pt->record_id = grib_count;;
                     stpcpy(rec_pt->file, filename);
+                    stpcpy(rec_pt->directory, data_directory_name);
                 }
                 
                 for (int i=0; i<number_keys; i++) {
@@ -194,12 +208,18 @@ void CreateRecordDB(void) {
                                 if (rec_pt->number_key_values == 0) {
                                     rec_pt->key_value = allocateDictionary();
                                     stpcpy(rec_pt->key_value->key, key);
+                                    if (strlen(key_value) > MAX_KEY_VALUE_STRING) {
+                                        fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+                                    }
                                     stpcpy(rec_pt->key_value->value, key_value);
                                     dict_pt = rec_pt->key_value;
                                     rec_pt->number_key_values++;
                                 } else {
                                     dictionary *new_key_value = allocateDictionary();
                                     stpcpy(new_key_value->key, key);
+                                    if (strlen(key_value) > MAX_KEY_VALUE_STRING) {
+                                        fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
+                                    }
                                     stpcpy(new_key_value->value, key_value);
                                     new_key_value->previous = dict_pt;
                                     dict_pt->next = new_key_value;

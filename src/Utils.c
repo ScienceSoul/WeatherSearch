@@ -170,14 +170,22 @@ char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys) {
     return keys;
 }
 
-record * _Nullable getQueries(char * _Nonnull search_input_file) {
+record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
     
     record *queries = NULL;
     
+    char *search_input_file = "queries.txt";
+    
     FILE *f1 = fopen(search_input_file,"r");
     if(!f1) {
-        fprintf(stdout,"%s: can't open the queries file %s.\n", PROGRAM_NAME, search_input_file);
-        return NULL;
+        char str[MAX_DIR_FILE_STRING];
+        stpcpy(str, "../");
+        strcat(str, search_input_file);
+        f1 = fopen(str,"r");
+        if(!f1) {
+            fprintf(stdout,"%s: can't find the queries file %s.\n", PROGRAM_NAME, search_input_file);
+            return NULL;
+        }
     }
     
     int lineCount = 1;
@@ -211,17 +219,17 @@ record * _Nullable getQueries(char * _Nonnull search_input_file) {
         if(ch == '\n'){
             lineCount++;
         } else {
+            if (idx > MAX_KEY_VALUE_STRING) {
+                fatal(PROGRAM_NAME, "string larger than buffer in getQueries().");
+            }
             buff[idx] = ch;
             idx++;
             if (ch == '{' && !first_character) {
-                char str[6];
-                if (strlen(buff)-1 > 5) {
-                    fatal(PROGRAM_NAME, "keyword for query definition too long. Use <query>.");
-                }
-                stpncpy(str, buff, strlen(buff)-1);
+                char str[MAX_KEY_VALUE_STRING];
+                stpncpy(str, buff, 5);
                 str[strlen(str)] = '\0';
-                if (strcmp(str, "query") != 0) {
-                    fatal(PROGRAM_NAME, "incorrect keyword for query definition. Should be <query>.");
+                if (strcmp(str, keyword) != 0) {
+                    fatal(PROGRAM_NAME, "incorrect keyword for query or record definition. Should be <query> or <record>.");
                 }
                 // New query definition starts here
                 memset(buff, 0, sizeof(buff));
@@ -303,6 +311,7 @@ record * _Nullable getQueries(char * _Nonnull search_input_file) {
     if (total_key_values == 0) {
         fatal(PROGRAM_NAME, "nothing to search!");
     }
+    
     return queries;
 }
 

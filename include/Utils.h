@@ -29,6 +29,6 @@ void __attribute__((overloadable)) warning(char head[_Nonnull], char message[_No
 void __attribute__((overloadable)) parseArgument(const char * _Nonnull argument, char * _Nonnull value, size_t * _Nonnull len);
 
 char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys);
-record * _Nullable getQueries(char * _Nonnull search_input_file);
+record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword);
 
 #endif /* Utils_h */
