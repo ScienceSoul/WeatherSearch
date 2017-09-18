@@ -8,12 +8,14 @@
 //
 
 #include "CreateRecordDB.h"
+#include "Search.h"
 
 #define MAX_VAL_LEN  1024
 
 bool UPDATE_RECORDS = false;
 char **entry_keys = NULL;
 size_t number_keys;
+size_t number_queries = 0;
 
 directory_node *store = NULL;
 record *queries = NULL;
@@ -49,6 +51,8 @@ int main(int argc, const char * argv[]) {
         q_pt = q_pt->next;
     }
 
+    fprintf(stdout, "Search......\n");
+    search();
 
     free(entry_keys);
     free(store);

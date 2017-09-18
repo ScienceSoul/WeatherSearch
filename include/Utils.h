@@ -9,11 +9,7 @@
 #ifndef Utils_h
 #define Utils_h
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <dirent.h>
-#include <stdbool.h>
 #include "Defs.h"
 
 #define PROGRAM_NAME "WeatherSearch"

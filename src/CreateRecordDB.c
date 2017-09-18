@@ -265,13 +265,13 @@ void CreateRecordDB(void) {
     
     d_pt = store;
     while (d_pt != NULL) {
-        for (int i=0; i<d_pt->number_files; i++) { // Loop files in directory
+        for (int i=0; i<d_pt->number_files; i++) { // Loop through files in directory
             record *r = d_pt->db[i];
             record *r_pt = r;
             while (r_pt != NULL) { // Loop through records in file
                 printf("record number: %d from file: %s.\n", r_pt->record_id, r_pt->file);
                 dictionary *dic_pt = r_pt->key_value;
-                while (dic_pt != NULL) { // Loop keys records in record
+                while (dic_pt != NULL) { // Loop through keys/values in record
                     printf("key: %s value:%s.\n", dic_pt->key, dic_pt->value);
                     dic_pt = dic_pt->next;
                 }

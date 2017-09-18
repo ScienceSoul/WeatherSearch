@@ -9,8 +9,10 @@
 #ifndef Defs_h
 #define Defs_h
 
-
-#endif /* Defs_h */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 #define MAX_KEY_VALUE_STRING 128
 #define MAX_DIR_FILE_STRING 128
@@ -47,3 +49,5 @@ typedef struct directory_node {
 record * _Nonnull allocateRecord(void);
 dictionary * _Nonnull allocateDictionary(void);
 directory_node * _Nonnull allocateDirectoryNode(void);
+
+#endif /* Defs_h */

@@ -172,6 +172,7 @@ char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys) {
 
 record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
     
+    extern size_t number_queries;
     record *queries = NULL;
     
     char *search_input_file = "queries.txt";
@@ -232,6 +233,7 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
                     fatal(PROGRAM_NAME, "incorrect keyword for query or record definition. Should be <query> or <record>.");
                 }
                 // New query definition starts here
+                number_queries++;
                 memset(buff, 0, sizeof(buff));
                 idx = 0;
                 if (first_q_node) {
