@@ -30,6 +30,7 @@ void init(void) {
     for (int i=0; i<number_keys; i++) {
         char *str = &entry_keys[i][0];
         fprintf(stdout, "key: %s\n", str);
+    }
 #endif
         
     fprintf(stdout, "Building the record DB....\n");

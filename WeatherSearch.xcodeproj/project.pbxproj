@@ -266,6 +266,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 65WT6FN4B4;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				HEADER_SEARCH_PATHS = /Users/seddikhakime/Documents/WeatherSearch/gribapi/include;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
