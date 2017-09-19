@@ -19,8 +19,10 @@
 
 typedef struct dictionary {
     
+    bool has_tag;
     char key[MAX_KEY_VALUE_STRING];
     char value[MAX_KEY_VALUE_STRING];
+    char tag[1];
     struct dictionary * _Nullable next;
     struct dictionary * _Nullable previous;
     

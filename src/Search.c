@@ -55,9 +55,34 @@ void search(void) {
                         record_dic_pt = r_pt->key_value;
                         while (record_dic_pt != NULL) {
                             if (strcmp(record_dic_pt->key, query_dic_pt->key) == 0) {
-                                if (strcmp(record_dic_pt->value, query_dic_pt->value) == 0) {
-                                    found[j] = true;
-                                    break;
+                                if (query_dic_pt->has_tag) {
+                                    double query_value = atof(query_dic_pt->value);
+                                    double record_value = atof(record_dic_pt->value);
+                                    char *str = ">";
+                                    if (strcmp(query_dic_pt->tag,str) == 0) {
+                                        if (record_value > query_value) {
+                                            found[j] = true;
+                                            break;
+                                        }
+                                    } else {
+                                        str = "<";
+                                        if (strcmp(query_dic_pt->tag, str) == 0) {
+                                            if (record_value < query_value) {
+                                                found[j] = true;
+                                                break;
+                                            }
+                                        } else {
+                                            if (query_value == record_value) {
+                                                found[j] = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (strcmp(record_dic_pt->value, query_dic_pt->value) == 0) {
+                                        found[j] = true;
+                                        break;
+                                    }
                                 }
                             }
                             record_dic_pt = record_dic_pt->next;
@@ -91,13 +116,42 @@ void search(void) {
         q_pt = q_pt->next;
     }
     
+    q_pt = queries;
     for (int i=0; i<number_queries; i++) {
+        fprintf(stdout, "GRIB files found matching the query:\n");
+        fprintf(stdout, "Query (values): ");
+        query_dic_pt = q_pt->key_value;
+        fprintf(stdout, "{");
+        while (query_dic_pt != NULL) {
+            if (query_dic_pt->next != NULL) {
+                fprintf(stdout, "%s,", query_dic_pt->value);
+            } else {
+                fprintf(stdout, "%s", query_dic_pt->value);
+            }
+            query_dic_pt = query_dic_pt->next;
+        }
+        fprintf(stdout, "}.\n");
+        fprintf(stdout, "GRIB files: \n");
         record *r = queries_results[i];
         record *r_pt = r;
         while (r_pt != NULL) {
             printf("File: %s.\n", r_pt->file);
             r_pt = r_pt->next;
         }
+        q_pt = q_pt->next;
+        fprintf(stdout, "\n");
     }
-    printf("here....\n");
+    
+    for (int i=0; i<number_queries; i++) {
+        record *r = queries_results[i];
+        record *r_pt = r;
+        while (r_pt != NULL) {
+            record *pt = r_pt->next;
+            if (r_pt->next != NULL) r_pt->next = NULL;
+            if (r_pt->previous != NULL) r_pt->previous = NULL;
+            free(r_pt);
+            r_pt = pt;
+        }
+    }
+    free(queries_results);
 }

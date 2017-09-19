@@ -89,8 +89,9 @@ void CreateRecordDB(void) {
         } else {
             stpcpy(dirname, path_to_directory);
         }
-        
+#ifdef VERBOSE
         fprintf(stdout, "%s: going to directory %s.\n", PROGRAM_NAME, dirname);
+#endif
         
         // Allocate directory node
         if (first_dir_node) {
@@ -113,7 +114,9 @@ void CreateRecordDB(void) {
             }
             number_files++;
         }
+#ifdef VERBOSE
         fprintf(stdout, "%s: %d file(s) found in data directory.\n", PROGRAM_NAME, (int)number_files);
+#endif
         
         // Allocate memory for the data base of records in current directory node
         d_pt->db = (record **)malloc(number_files*sizeof(record *));
@@ -142,9 +145,10 @@ void CreateRecordDB(void) {
             if (!in) {
                 fprintf(stderr, "%s: can't open the file %s.\n", PROGRAM_NAME, filename);
                 fatal(PROGRAM_NAME);
-            } else {
-                fprintf(stdout, "%s: opening GRIB file: %s.\n", PROGRAM_NAME, filename);
             }
+#ifdef VERBOSE
+            fprintf(stdout, "%s: opening GRIB file: %s.\n", PROGRAM_NAME, filename);
+#endif
             
             // Loop through all handles of GRIB messages
             int grib_count = 0;
@@ -262,7 +266,8 @@ void CreateRecordDB(void) {
         
     } while (!feof(data_directories));
     
-    
+  
+#ifdef VERBOSE
     d_pt = store;
     while (d_pt != NULL) {
         for (int i=0; i<d_pt->number_files; i++) { // Loop through files in directory
@@ -280,77 +285,5 @@ void CreateRecordDB(void) {
         }
         d_pt = d_pt->next;
     }
-    
-    // Loop through handles of messages in a file and
-    // display keys for each
-    //    int grib_count = 0;
-    //    while ((h = grib_handle_new_from_file(0, in, &err)) != NULL) {
-    //        grib_count++;
-    //        printf("-- GRIB N. %d --\n",grib_count);
-    //        if(!h) {
-    //            printf("ERROR: Unable to create grib handle\n");
-    //            exit(1);
-    //        }
-    //
-    //        // Get variable name associated to message
-    //        size_t vlen = MAX_VAL_LEN;
-    //        GRIB_CHECK(grib_get_string(h, "name", message_name, &vlen), 0);
-    //        printf("Variable name: %s\n", message_name);
-    //
-    //        grib_keys_iterator *kiter = NULL;
-    //        kiter = grib_keys_iterator_new(h, key_iterator_filter_flags, name_space);
-    //        if (!kiter) {
-    //            printf("Error: unable to create keys iterator.\n");
-    //        }
-    //
-    //        while (grib_keys_iterator_next(kiter)) {
-    //            const char *name = grib_keys_iterator_get_name(kiter);
-    //            vlen = MAX_VAL_LEN;
-    //            bzero(key_value, vlen);
-    //            GRIB_CHECK(grib_get_string(h, name, key_value, &vlen), name);
-    //            printf("%s = %s\n", name, key_value);
-    //        }
-    //
-    //        grib_keys_iterator_delete(kiter);
-    //        grib_handle_delete(h);
-    //    }
-    //
-    //    rewind(in);
-    //    h = grib_handle_new_from_file(0, in, &err);
-    //    if (h == NULL) {
-    //        printf("Error: unable to create handle from file %s\n.", filename);
-    //        exit(-1);
-    //    }
-    //
-    //    /* get the size of the values array*/
-    //    GRIB_CHECK(grib_get_size(h,"values",&values_len),0);
-    //
-    //    values = (double *)malloc(values_len * sizeof(double));
-    //
-    //    // Get variable name associated to message
-    //    size_t vlen = MAX_VAL_LEN;
-    //    char var_name[MAX_VAL_LEN];
-    //    GRIB_CHECK(grib_get_string(h, "name", var_name, &vlen), 0);
-    //    printf("Values for variable %s: \n", var_name);
-    //
-    //    // Get the size of the values array
-    //    GRIB_CHECK(grib_get_double_array(h, "values", values, &values_len), 0);
-    //
-    //    for (int i=0; i<values_len; i++) {
-    //        printf("%d %.10e\n", i+1, values[i]);
-    //    }
-    //
-    //    free(values);
-    //
-    //    GRIB_CHECK(grib_get_double(h, "max", &max), 0);
-    //    GRIB_CHECK(grib_get_double(h, "min", &min), 0);
-    //    GRIB_CHECK(grib_get_double(h, "average", &average), 0);
-    //    
-    //    printf("%d values found in %s\n.", (int)values_len, filename);
-    //    printf("max=%.10e min=%.10e average=%.10e\n.", max, min, average);
-    //    
-    //    grib_handle_delete(h);
-    //    
-    //    fclose(in);
-    
+#endif
 }

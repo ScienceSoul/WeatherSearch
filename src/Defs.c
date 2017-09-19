@@ -24,9 +24,10 @@ record * _Nonnull allocateRecord(void) {
 dictionary * _Nonnull allocateDictionary(void) {
     
     dictionary *d = (dictionary *)malloc(sizeof(dictionary));
-    *d = (dictionary){.next=NULL, .previous=NULL};
+    *d = (dictionary){.has_tag=false, .next=NULL, .previous=NULL};
     bzero(d->key, MAX_KEY_VALUE_STRING);
     bzero(d->value, MAX_KEY_VALUE_STRING);
+    bzero(d->tag, 1);
     return d;
 }
 

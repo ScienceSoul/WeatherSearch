@@ -190,8 +190,10 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
     }
     
     int lineCount = 1;
-    bool first_character = true;
+    bool first_character = true, found_tag = false;
     char ch = 0;
+    char str[MAX_KEY_VALUE_STRING];
+    char tag[1];
     bool new_query;
     char buff[MAX_KEY_VALUE_STRING];
     int idx = 0;
@@ -226,15 +228,15 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
             buff[idx] = ch;
             idx++;
             if (ch == '{' && !first_character) {
-                char str[MAX_KEY_VALUE_STRING];
-                stpncpy(str, buff, 5);
-                str[strlen(str)] = '\0';
+                memset(str, 0, sizeof(str));
+                memcpy(str, buff, 5);
                 if (strcmp(str, keyword) != 0) {
                     fatal(PROGRAM_NAME, "incorrect keyword for query or record definition. Should be <query> or <record>.");
                 }
                 // New query definition starts here
                 number_queries++;
                 memset(buff, 0, sizeof(buff));
+                memset(tag, 0, sizeof(tag));
                 idx = 0;
                 if (first_q_node) {
                     q_head = allocateRecord();
@@ -269,6 +271,10 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
                             continue;
                         }
                         memcpy(kv_pt->value, buff, idx);
+                        if (found_tag) {
+                            memcpy(kv_pt->tag, tag, 1);
+                            kv_pt->has_tag = true;
+                        }
                         if (!first_kv_node) {
                             kv_pos->next = kv_pt;
                             kv_pt->previous = kv_pos;
@@ -280,6 +286,8 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
                         idx = 0;
                         lineCount++;
                         found_key = 0;
+                        found_tag = false;
+                        memset(tag, 0, sizeof(tag));
                     } else {
                         if (ch == ':') {
                             found_key++;
@@ -298,6 +306,11 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
                             memcpy(kv_pt->key, buff, idx);
                             memset(buff, 0, sizeof(buff));
                             idx = 0;
+                        } else if (ch == '<' || ch == '=' || ch == '>') {
+                            found_tag = true;
+                            if (ch == '<') memcpy(tag, "<", 1);
+                            if (ch == '=') memcpy(tag, "=", 1);
+                            if (ch == '>') memcpy(tag, ">", 1);
                         } else {
                             buff[idx] = ch;
                             idx++;
