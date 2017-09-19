@@ -41,10 +41,10 @@ void search(void) {
         bool first_match = true;
         bool found[q_pt->number_key_values];
         d_pt = store;
+        match_pt = NULL;
+        match_head = NULL;
         
         while (d_pt != NULL) {
-            match_pt = NULL;
-            match_head = NULL;
             for (int i=0; i<d_pt->number_files; i++) { // Loop through files in directory
                 record *r = d_pt->db[i];
                 record *r_pt = r;
@@ -117,6 +117,9 @@ void search(void) {
     }
     
     q_pt = queries;
+    char *tag1 = ">";
+    char *tag2 = "<";
+    char *tag3 = "=";
     for (int i=0; i<number_queries; i++) {
         fprintf(stdout, "GRIB files found matching the query:\n");
         fprintf(stdout, "Query (values): ");
@@ -124,9 +127,17 @@ void search(void) {
         fprintf(stdout, "{");
         while (query_dic_pt != NULL) {
             if (query_dic_pt->next != NULL) {
-                fprintf(stdout, "%s,", query_dic_pt->value);
+                if (query_dic_pt->has_tag) {
+                    if (strcmp(query_dic_pt->tag, tag1) == 0) fprintf(stdout, "%s%s,", tag1, query_dic_pt->value);
+                    if (strcmp(query_dic_pt->tag, tag2) == 0) fprintf(stdout, "%s%s,", tag2, query_dic_pt->value);
+                    if (strcmp(query_dic_pt->tag, tag3) == 0) fprintf(stdout, "%s%s,", tag3, query_dic_pt->value);
+                } else fprintf(stdout, "%s,", query_dic_pt->value);
             } else {
-                fprintf(stdout, "%s", query_dic_pt->value);
+                if (query_dic_pt->has_tag) {
+                    if (strcmp(query_dic_pt->tag, tag1) == 0) fprintf(stdout, "%s%s", tag1, query_dic_pt->value);
+                    if (strcmp(query_dic_pt->tag, tag2) == 0) fprintf(stdout, "%s%s", tag2, query_dic_pt->value);
+                    if (strcmp(query_dic_pt->tag, tag3) == 0) fprintf(stdout, "%s%s", tag3, query_dic_pt->value);
+                } else fprintf(stdout, "%s", query_dic_pt->value);
             }
             query_dic_pt = query_dic_pt->next;
         }
