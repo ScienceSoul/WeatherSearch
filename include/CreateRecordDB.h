@@ -13,5 +13,6 @@
 #include "Utils.h"
 
 void CreateRecordDB(void);
+void ReadRecordDB(void);
 
 #endif /* CreateRecordDB_h */

@@ -10,7 +10,7 @@
 #include "CreateRecordDB.h"
 #include "Search.h"
 
-bool UPDATE_RECORDS = false;
+bool UPDATE_RECORD_DB = false;
 char **entry_keys = NULL;
 size_t number_keys;
 size_t number_queries = 0;
@@ -32,10 +32,35 @@ void init(void) {
         fprintf(stdout, "key: %s\n", str);
     }
 #endif
-        
-    fprintf(stdout, "Building the record DB....\n");
-    CreateRecordDB();
-    fprintf(stdout, "\n");
+    
+    DIR *dir = NULL;
+    struct dirent *file = NULL;
+    bool is_record_db = false;
+    char *record_db_file = "records.db";
+    
+    dir = opendir("./params");
+    if (!dir) {
+        dir = opendir("../params");
+        if (!dir) {
+            fatal(PROGRAM_NAME, "directory params not found.");
+        }
+    }
+    while ((file = readdir(dir)) != NULL) {
+        if (strcmp(file->d_name, record_db_file) == 0) {
+            is_record_db = true;
+            break;
+        }
+    }
+    
+    if (!is_record_db || UPDATE_RECORD_DB) {
+        fprintf(stdout, "Building the record DB....\n");
+        CreateRecordDB();
+        fprintf(stdout, "\n");
+    } else {
+        fprintf(stdout, "Load existing record DB....\n");
+        ReadRecordDB();
+        fprintf(stdout, "\n");
+    }
 }
 
 void deallocate(void) {
@@ -92,12 +117,20 @@ void deallocate(void) {
 
 int main(int argc, const char * argv[]) {
     
+    if (argc > 1) {
+        char *valid_argument ="-update_record_db";
+        if (strcmp(argv[1],valid_argument) == 0) {
+            UPDATE_RECORD_DB = true;
+        } else {
+            fatal(PROGRAM_NAME, "invalid argument. Give -update_record_db to rebuild the record DB.");
+        }
+    }
     
     init();
     
     // Get the queries
     const char *keyword = "query";
-    queries = getRecordsOrQueries(keyword);
+    queries = getQueries(keyword);
     
     // Do the search
     search();

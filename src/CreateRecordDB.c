@@ -266,24 +266,276 @@ void CreateRecordDB(void) {
         
     } while (!feof(data_directories));
     
-  
-#ifdef VERBOSE
-    d_pt = store;
-    while (d_pt != NULL) {
-        for (int i=0; i<d_pt->number_files; i++) { // Loop through files in directory
-            record *r = d_pt->db[i];
-            record *r_pt = r;
-            while (r_pt != NULL) { // Loop through records in file
-                printf("record number: %d from file: %s.\n", r_pt->record_id, r_pt->file);
-                dictionary *dic_pt = r_pt->key_value;
-                while (dic_pt != NULL) { // Loop through keys/values in record
-                    printf("key: %s value:%s.\n", dic_pt->key, dic_pt->value);
-                    dic_pt = dic_pt->next;
-                }
-                r_pt = r_pt->next;
-            }
+    FILE *out = fopen("./params/records.db","w");
+    if (!out) {
+        out = fopen("../params/records.db", "w");
+        if (!out) {
+            fatal(PROGRAM_NAME, "error when creating the records DB file.");
         }
-        d_pt = d_pt->next;
     }
+    output_db(true, out);
+#ifdef VERBOSE
+    output_db(false, NULL);
 #endif
 }
+
+void ReadRecordDB(void) {
+    
+    extern directory_node *store;
+    
+    char *record_db_file = "records.db";
+    char *keyword = "record";
+    
+    FILE *f1 = fopen("./params/records.db","r");
+    if(!f1) {
+        f1 = fopen("../params/records.db","r");
+    }
+    
+    int lineCount = 1;
+    int idx = 0;
+    int indx_file = 0;
+    char ch = 0;
+    char str[MAX_KEY_VALUE_STRING];
+    char buff[MAX_KEY_VALUE_STRING];
+    char meta[MAX_KEY_VALUE_STRING];
+    char id[MAX_KEY_VALUE_STRING];
+    char directory[MAX_KEY_VALUE_STRING];
+    char file[MAX_KEY_VALUE_STRING];
+    char nb_file[MAX_KEY_VALUE_STRING];
+    char prev_directory[MAX_KEY_VALUE_STRING];
+    char prev_file[MAX_KEY_VALUE_STRING];
+    bool first_character = true;
+    bool new_query;
+    bool first_r_node = true;
+    bool first_d_node = true;
+    directory_node *d_head = NULL, *d_pos = NULL, *d_pt = NULL;
+    record *r_head = NULL, *r_pos = NULL, *r_pt = NULL;
+    dictionary *kv_head = NULL, *kv_pos = NULL, *kv_pt = NULL;
+    
+    d_head = allocateDirectoryNode();
+    store = d_head;
+    d_pos = d_head;
+    while(1) {
+        ch = fgetc(f1);
+        if (ch == -1) {
+            fprintf(stderr, "%s: syntax error in the file %s. File should end with <}>.\n", PROGRAM_NAME, record_db_file);
+            fatal(PROGRAM_NAME);
+        }
+        if (ch == ' ') continue;
+        if (first_character && ch != '{') { // First character in file should be {
+            fprintf(stderr, "%s: syntax error in the file %s. File should start with <{>.\n", PROGRAM_NAME, record_db_file);
+            fatal(PROGRAM_NAME);
+        } else if (first_character && ch == '{'){
+            first_character = false;
+            continue;
+        }
+        if (ch == '}') { // End of file,
+            // but don't forget to add the last records for the very last file
+            d_pt->db[indx_file] = r_head;
+            break;
+        }
+        
+        if(ch == '\n'){
+            lineCount++;
+        } else {
+            if (idx > MAX_KEY_VALUE_STRING) {
+                fatal(PROGRAM_NAME, "string larger than buffer in ReadRecordDB().");
+            }
+            buff[idx] = ch;
+            idx++;
+            if (ch == '(') {
+                int k = 0;
+                int l = 0;
+                memset(meta, 0, sizeof(meta));
+                memset(id, 0, sizeof(id));
+                memset(directory, 0, sizeof(directory));
+                memset(file, 0, sizeof(file));
+                memset(nb_file, 0, sizeof(nb_file));
+                while (1) {
+                    ch = fgetc(f1);
+                    if (ch == ')') {
+                        memcpy(nb_file, meta, k);
+                        break;
+                    };
+                    if (ch == ',') {
+                        if (l == 0) memcpy(id, meta, k);
+                        if (l == 1) memcpy(directory, meta, k);
+                        if (l == 2) memcpy(file, meta, k);
+                        memset(meta, 0, sizeof(meta));
+                        k = 0;
+                        if (l > 2) {
+                            fprintf(stderr, "%s: syntax error in the file %s. Too much commas in record metadata definition.\n", PROGRAM_NAME, record_db_file);
+                            fatal(PROGRAM_NAME);
+                        }
+                        l++;
+                    } else {
+                        meta[k] = ch;
+                        k++;
+                    }
+                }
+            }
+            if (ch == '{' && !first_character) {
+                memset(str, 0, sizeof(str));
+                memcpy(str, buff, 6);
+                if (strcmp(str, keyword) != 0) {
+                    fatal(PROGRAM_NAME, "incorrect keyword for record definition. Should be <record>.");
+                }
+                // New record definition starts here
+                memset(buff, 0, sizeof(buff));
+                idx = 0;
+                if (first_r_node) {
+                    r_head = allocateRecord();
+                    r_head->record_id = atoi(id);
+                    stpcpy(r_head->directory, directory);
+                    stpcpy(r_head->file, file);
+                    r_pos = r_head;
+                    r_pt = r_head;
+                    
+                    stpcpy(prev_directory, directory);
+                    stpcpy(prev_file, file);
+                } else {
+                    r_pt = allocateRecord();
+                    r_pt->record_id = atoi(id);
+                    stpcpy(r_pt->directory, directory);
+                    stpcpy(r_pt->file, file);
+                }
+                new_query = true;
+                bool field_line = false;
+                bool first_kv_node = true;
+                int found_key = 0;
+                while(1) {
+                    ch = fgetc(f1);
+                    if (ch == ' ') continue;
+                    if (ch == '}' && new_query) { // End of record
+                        if (!first_r_node) {
+                            if (strcmp(prev_file, file) != 0 && strcmp(prev_directory, directory) == 0) {
+                                if (first_d_node) {
+                                    d_pos->db = (record **)malloc(atoi(nb_file)*sizeof(record *));
+                                    d_pos->number_files = atoi(nb_file);
+                                    d_pt = d_pos;
+                                    first_d_node = false;
+                                }
+                                d_pt->db[indx_file] = r_head;
+                                r_head = r_pt;
+                                r_pos = r_pt;
+                                stpcpy(prev_file, file);
+                                indx_file++;
+                            } else if (strcmp(prev_directory, directory) != 0) {
+                                d_pt->db[indx_file] = r_head;
+                                r_head = r_pt;
+                                r_pos = r_pt;
+                                
+                                d_pt = allocateDirectoryNode();
+                                d_pt->number_files = atoi(nb_file);
+                                d_pos->next = d_pt;
+                                d_pt->previous = d_pos;
+                                d_pt->db = (record **)malloc(atoi(nb_file)*sizeof(record *));
+                                d_pos = d_pt;
+                                stpcpy(prev_file, file);
+                                stpcpy(prev_directory, directory);
+                                indx_file = 0;
+                            } else {
+                                r_pos->next = r_pt;
+                                r_pt->previous = r_pos;
+                                r_pos = r_pt;
+                            }
+                        }
+                        new_query = false;
+                        first_r_node = false;
+                        break;
+                    }
+                    if(ch == '\n'){
+                        if (!field_line) {
+                            lineCount++;
+                            field_line = true;
+                            continue;
+                        }
+                        memcpy(kv_pt->value, buff, idx);
+                        if (!first_kv_node) {
+                            kv_pos->next = kv_pt;
+                            kv_pt->previous = kv_pos;
+                            kv_pos = kv_pt;
+                        }
+                        r_pt->number_key_values++;
+                        first_kv_node = false;
+                        memset(buff, 0, sizeof(buff));
+                        idx = 0;
+                        lineCount++;
+                        found_key = 0;
+                    } else {
+                        if (ch == ':') {
+                            found_key++;
+                            if (found_key > 1) {
+                                fprintf(stderr, "%s: syntax error in the file %s. Maybe duplicate character <:>.\n", PROGRAM_NAME, record_db_file);
+                                fatal(PROGRAM_NAME);
+                            }
+                            if (first_kv_node) {
+                                kv_head = allocateDictionary();
+                                r_pt->key_value = kv_head;
+                                kv_pos = kv_head;
+                                kv_pt = kv_head;
+                            } else {
+                                kv_pt = allocateDictionary();
+                            }
+                            memcpy(kv_pt->key, buff, idx);
+                            memset(buff, 0, sizeof(buff));
+                            idx = 0;
+                        } else {
+                            buff[idx] = ch;
+                            idx++;
+                            if (idx >= MAX_KEY_VALUE_STRING) {
+                                fatal(PROGRAM_NAME, "string larger than buffer in getQueries().");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+#ifdef VERBOSE
+    output_db(false, NULL);
+#endif
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

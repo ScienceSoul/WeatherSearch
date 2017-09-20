@@ -170,7 +170,7 @@ char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys) {
     return keys;
 }
 
-record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
+record * _Nullable getQueries(const char * _Nonnull keyword) {
     
     extern size_t number_queries;
     record *queries = NULL;
@@ -231,7 +231,7 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
                 memset(str, 0, sizeof(str));
                 memcpy(str, buff, 5);
                 if (strcmp(str, keyword) != 0) {
-                    fatal(PROGRAM_NAME, "incorrect keyword for query or record definition. Should be <query> or <record>.");
+                    fatal(PROGRAM_NAME, "incorrect keyword for query definition. Should be <query>.");
                 }
                 // New query definition starts here
                 number_queries++;
@@ -328,6 +328,43 @@ record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword) {
     }
     
     return queries;
+}
+
+void output_db(bool to_file, FILE * _Nullable file) {
+    
+    extern directory_node *store;
+    
+    if (to_file) {
+        fprintf(file, "{\n");
+    } else fprintf(stdout, "{\n");
+    directory_node *d_pt = store;
+    while (d_pt != NULL) {
+        for (int i=0; i<d_pt->number_files; i++) { // Loop through files in directory
+            record *r = d_pt->db[i];
+            record *r_pt = r;
+            while (r_pt != NULL) { // Loop through records in file
+                if (to_file) {
+                    fprintf(file, "record(%d,%s,%s,%d) {\n", r_pt->record_id, r_pt->directory, r_pt->file, (int)d_pt->number_files);
+                } else fprintf(stdout, "record(%d,%s,%s,%d) {\n", r_pt->record_id, r_pt->directory, r_pt->file, (int)d_pt->number_files);
+                dictionary *dic_pt = r_pt->key_value;
+                while (dic_pt != NULL) { // Loop through keys/values in record
+                    if (to_file) {
+                        fprintf(file, "  %s:%s\n", dic_pt->key, dic_pt->value);
+                    } else fprintf(stdout, "  %s:%s\n", dic_pt->key, dic_pt->value);
+                    dic_pt = dic_pt->next;
+                }
+                if (to_file) {
+                    fprintf(file, " }\n");
+                } else fprintf(stdout, " }\n");
+                r_pt = r_pt->next;
+            }
+        }
+        d_pt = d_pt->next;
+    }
+    if (to_file) {
+        fprintf(file, "}");
+    } else fprintf(stdout, "}");
+    if (to_file) fclose(file);
 }
 
 

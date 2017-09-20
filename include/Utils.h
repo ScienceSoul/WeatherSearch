@@ -25,6 +25,7 @@ void __attribute__((overloadable)) warning(char head[_Nonnull], char message[_No
 void __attribute__((overloadable)) parseArgument(const char * _Nonnull argument, char * _Nonnull value, size_t * _Nonnull len);
 
 char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys);
-record * _Nullable getRecordsOrQueries(const char * _Nonnull keyword);
+record * _Nullable getQueries(const char * _Nonnull keyword);
+void output_db(bool to_file, FILE * _Nullable file);
 
 #endif /* Utils_h */
