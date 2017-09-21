@@ -490,7 +490,7 @@ void ReadRecordDB(void) {
                             buff[idx] = ch;
                             idx++;
                             if (idx >= MAX_KEY_VALUE_STRING) {
-                                fatal(PROGRAM_NAME, "string larger than buffer in getQueries().");
+                                fatal(PROGRAM_NAME, "string larger than buffer in ReadRecordDB().");
                             }
                         }
                     }
