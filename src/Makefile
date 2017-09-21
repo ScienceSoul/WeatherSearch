@@ -51,16 +51,3 @@ depend: $(SRCS)
 
 # DO NOT DELETE THIS LINE -- make depend needs it
 
-main.o: ../include/CreateRecordDB.h
-main.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api.h
-main.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api_windef.h
-main.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api_version.h
-main.o: ../include/Utils.h ../include/Defs.h ../include/Search.h
-Defs.o: ../include/Defs.h
-CreateRecordDB.o: ../include/CreateRecordDB.h
-CreateRecordDB.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api.h
-CreateRecordDB.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api_windef.h
-CreateRecordDB.o: /Users/seddikhakime/Documents/WeatherSearch/gribapi/include/grib_api_version.h
-CreateRecordDB.o: ../include/Utils.h ../include/Defs.h
-Search.o: ../include/Search.h ../include/Defs.h
-Utils.o: ../include/Utils.h ../include/Defs.h
