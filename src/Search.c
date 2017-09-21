@@ -20,6 +20,9 @@ bool all(bool array[], size_t n) {
     return all;
 }
 
+//
+// Search the query(ies)
+// 
 void search(void) {
     
     extern directory_node *store;

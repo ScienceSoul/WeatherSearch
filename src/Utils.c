@@ -93,6 +93,9 @@ void __attribute__((overloadable)) parseArgument(const char * _Nonnull argument,
     }
 }
 
+//
+// Get the searchable keys that will be used to build the record DB
+//
 char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys) {
     
     // Very basic parsing of our input parameters file.
@@ -170,6 +173,9 @@ char * _Nullable * _Nullable getSearchableKeys(size_t * _Nonnull number_keys) {
     return keys;
 }
 
+//
+// Get the query(ies)
+//
 record * _Nullable getQueries(const char * _Nonnull keyword) {
     
     extern size_t number_queries;

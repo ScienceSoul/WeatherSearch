@@ -21,6 +21,9 @@ bool isValidFile(char *name) {
     return valid;
 }
 
+//
+// Create a record DB
+//
 void CreateRecordDB(void) {
     
     extern directory_node *store;
@@ -279,6 +282,9 @@ void CreateRecordDB(void) {
 #endif
 }
 
+//
+// Read an existing record DB
+//
 void ReadRecordDB(void) {
     
     extern directory_node *store;
@@ -343,7 +349,7 @@ void ReadRecordDB(void) {
             }
             buff[idx] = ch;
             idx++;
-            if (ch == '(') {
+            if (ch == '(') { // The meta data section
                 int k = 0;
                 int l = 0;
                 memset(meta, 0, sizeof(meta));
@@ -408,7 +414,7 @@ void ReadRecordDB(void) {
                     if (ch == ' ') continue;
                     if (ch == '}' && new_query) { // End of record
                         if (!first_r_node) {
-                            if (strcmp(prev_file, file) != 0 && strcmp(prev_directory, directory) == 0) {
+                            if (strcmp(prev_file, file) != 0 && strcmp(prev_directory, directory) == 0) { // End of records for a given file, go to next file
                                 if (first_d_node) {
                                     d_pos->db = (record **)malloc(atoi(nb_file)*sizeof(record *));
                                     d_pos->number_files = atoi(nb_file);
@@ -420,7 +426,7 @@ void ReadRecordDB(void) {
                                 r_pos = r_pt;
                                 stpcpy(prev_file, file);
                                 indx_file++;
-                            } else if (strcmp(prev_directory, directory) != 0) {
+                            } else if (strcmp(prev_directory, directory) != 0) { // Go to next directory
                                 d_pt->db[indx_file] = r_head;
                                 r_head = r_pt;
                                 r_pos = r_pt;
