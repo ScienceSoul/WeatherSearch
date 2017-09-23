@@ -48,8 +48,8 @@ typedef struct directory_node {
     struct directory_node * _Nullable previous;
 } directory_node;
 
-record * _Nonnull allocateRecord(void);
-dictionary * _Nonnull allocateDictionary(void);
+record * _Nonnull allocateRecordNode(void);
+dictionary * _Nonnull allocateDictionaryNode(void);
 directory_node * _Nonnull allocateDirectoryNode(void);
 
 #endif /* Defs_h */

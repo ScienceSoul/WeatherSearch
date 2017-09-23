@@ -12,7 +12,7 @@
 
 #include "Defs.h"
 
-record * _Nonnull allocateRecord(void) {
+record * _Nonnull allocateRecordNode(void) {
     
     record *r = (record *)malloc(sizeof(record));
     *r = (record){.record_id=0, .number_key_values=0, .key_value=NULL, .next=NULL, .previous=NULL};
@@ -21,7 +21,7 @@ record * _Nonnull allocateRecord(void) {
     return r;
 }
 
-dictionary * _Nonnull allocateDictionary(void) {
+dictionary * _Nonnull allocateDictionaryNode(void) {
     
     dictionary *d = (dictionary *)malloc(sizeof(dictionary));
     *d = (dictionary){.has_tag=false, .next=NULL, .previous=NULL};

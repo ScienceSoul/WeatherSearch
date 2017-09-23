@@ -245,12 +245,12 @@ record * _Nullable getQueries(const char * _Nonnull keyword) {
                 memset(tag, 0, sizeof(tag));
                 idx = 0;
                 if (first_q_node) {
-                    q_head = allocateRecord();
+                    q_head = allocateRecordNode();
                     queries = q_head;
                     q_pos = q_head;
                     q_pt = q_head;
                 } else {
-                    q_pt = allocateRecord();
+                    q_pt = allocateRecordNode();
                 }
                 new_query = true;
                 bool field_line = false;
@@ -302,12 +302,12 @@ record * _Nullable getQueries(const char * _Nonnull keyword) {
                                 fatal(PROGRAM_NAME);
                             }
                             if (first_kv_node) {
-                                kv_head = allocateDictionary();
+                                kv_head = allocateDictionaryNode();
                                 q_pt->key_value = kv_head;
                                 kv_pos = kv_head;
                                 kv_pt = kv_head;
                             } else {
-                                kv_pt = allocateDictionary();
+                                kv_pt = allocateDictionaryNode();
                             }
                             memcpy(kv_pt->key, buff, idx);
                             memset(buff, 0, sizeof(buff));

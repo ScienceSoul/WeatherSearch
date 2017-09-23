@@ -94,7 +94,7 @@ void search(void) {
                     }
                     if (all(found, q_pt->number_key_values)) { // Add the record to the list of found records matching the query
                         if (first_match) {
-                            record *match = allocateRecord();
+                            record *match = allocateRecordNode();
                             stpcpy(match->file, r_pt->file);
                             stpcpy(match->directory, r_pt->directory);
                             queries_results[k] = match;
@@ -102,7 +102,7 @@ void search(void) {
                             k++;
                             first_match = false;
                         } else {
-                            match_pt = allocateRecord();
+                            match_pt = allocateRecordNode();
                             stpcpy(match_pt->file, r_pt->file);
                             stpcpy(match_pt->directory, r_pt->directory);
                             match_head->next = match_pt;

@@ -165,7 +165,7 @@ void CreateRecordDB(void) {
                 }
                 
                 if (first_record) {
-                    r_head = allocateRecord();
+                    r_head = allocateRecordNode();
                     r_head->record_id = grib_count;
                     stpcpy(r_head->file, filename);
                     stpcpy(r_head->directory, data_directory_name);
@@ -174,7 +174,7 @@ void CreateRecordDB(void) {
                     rec_pt = r_head;
                     first_record = false;
                 } else {
-                    rec_pt = allocateRecord();
+                    rec_pt = allocateRecordNode();
                     rec_pt->record_id = grib_count;;
                     stpcpy(rec_pt->file, filename);
                     stpcpy(rec_pt->directory, data_directory_name);
@@ -213,7 +213,7 @@ void CreateRecordDB(void) {
                                 GRIB_CHECK(grib_get_string(h, name, key_value, &vlen), name);
                                 
                                 if (rec_pt->number_key_values == 0) {
-                                    rec_pt->key_value = allocateDictionary();
+                                    rec_pt->key_value = allocateDictionaryNode();
                                     stpcpy(rec_pt->key_value->key, key);
                                     if (strlen(key_value) > MAX_KEY_VALUE_STRING) {
                                         fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
@@ -222,7 +222,7 @@ void CreateRecordDB(void) {
                                     dict_pt = rec_pt->key_value;
                                     rec_pt->number_key_values++;
                                 } else {
-                                    dictionary *new_key_value = allocateDictionary();
+                                    dictionary *new_key_value = allocateDictionaryNode();
                                     stpcpy(new_key_value->key, key);
                                     if (strlen(key_value) > MAX_KEY_VALUE_STRING) {
                                         fatal(PROGRAM_NAME, "string larger than buffer in CreateRecordDB().");
@@ -390,7 +390,7 @@ void ReadRecordDB(void) {
                 memset(buff, 0, sizeof(buff));
                 idx = 0;
                 if (first_r_node) {
-                    r_head = allocateRecord();
+                    r_head = allocateRecordNode();
                     r_head->record_id = atoi(id);
                     stpcpy(r_head->directory, directory);
                     stpcpy(r_head->file, file);
@@ -400,7 +400,7 @@ void ReadRecordDB(void) {
                     stpcpy(prev_directory, directory);
                     stpcpy(prev_file, file);
                 } else {
-                    r_pt = allocateRecord();
+                    r_pt = allocateRecordNode();
                     r_pt->record_id = atoi(id);
                     stpcpy(r_pt->directory, directory);
                     stpcpy(r_pt->file, file);
@@ -476,12 +476,12 @@ void ReadRecordDB(void) {
                                 fatal(PROGRAM_NAME);
                             }
                             if (first_kv_node) {
-                                kv_head = allocateDictionary();
+                                kv_head = allocateDictionaryNode();
                                 r_pt->key_value = kv_head;
                                 kv_pos = kv_head;
                                 kv_pt = kv_head;
                             } else {
-                                kv_pt = allocateDictionary();
+                                kv_pt = allocateDictionaryNode();
                             }
                             memcpy(kv_pt->key, buff, idx);
                             memset(buff, 0, sizeof(buff));
