@@ -20,19 +20,6 @@ record *queries = NULL;
 
 void init(void) {
     
-    entry_keys = getSearchableKeys(&number_keys);
-    if (entry_keys == NULL) {
-        fatal(PROGRAM_NAME, "problem loading the keys definition file.");
-    }
-    
-#ifdef VERBOSE
-    fprintf(stdout, "%s: number of keys used in the record DB: %d.\n", PROGRAM_NAME, (int)number_keys);
-    for (int i=0; i<number_keys; i++) {
-        char *str = &entry_keys[i][0];
-        fprintf(stdout, "key: %s\n", str);
-    }
-#endif
-    
     DIR *dir = NULL;
     struct dirent *file = NULL;
     bool is_record_db = false;
@@ -53,6 +40,19 @@ void init(void) {
     }
     
     if (!is_record_db || UPDATE_RECORD_DB) {
+        entry_keys = getSearchableKeys(&number_keys);
+        if (entry_keys == NULL) {
+            fatal(PROGRAM_NAME, "problem loading the keys definition file.");
+        }
+        
+#ifdef VERBOSE
+        fprintf(stdout, "%s: number of keys used in the record DB: %d.\n", PROGRAM_NAME, (int)number_keys);
+        for (int i=0; i<number_keys; i++) {
+            char *str = &entry_keys[i][0];
+            fprintf(stdout, "key: %s\n", str);
+        }
+#endif
+        
         fprintf(stdout, "Building the record DB....\n");
         CreateRecordDB();
         fprintf(stdout, "\n");
@@ -65,7 +65,7 @@ void init(void) {
 
 void deallocate(void) {
     
-    free(entry_keys);
+    if (entry_keys != NULL) free(entry_keys);
     
     directory_node *d_pt = store;
     while (d_pt != NULL) {
