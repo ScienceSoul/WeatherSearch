@@ -12,7 +12,7 @@
 
 bool UPDATE_RECORD_DB = false;
 char **entry_keys = NULL;
-size_t number_keys;
+size_t number_keys = 0;
 size_t number_queries = 0;
 
 directory_node *store = NULL;
