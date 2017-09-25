@@ -8,5 +8,5 @@ WeatherSearch.xcodeproj/xcuserdata/*
 queries.txt
 gribapi
 data
-params/**/*.dat
+params/**/data_directories.dat
 params/**/*.db
