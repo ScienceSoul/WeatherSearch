@@ -126,6 +126,7 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+    // Initialization
     init();
     
     // Get the queries
