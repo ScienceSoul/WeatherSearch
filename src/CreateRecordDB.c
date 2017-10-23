@@ -349,7 +349,7 @@ void ReadRecordDB(void) {
             }
             buff[idx] = ch;
             idx++;
-            if (ch == '(') { // The meta data section
+            if (ch == '(') { // The meta-data section
                 int k = 0;
                 int l = 0;
                 memset(meta, 0, sizeof(meta));

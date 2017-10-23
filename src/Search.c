@@ -112,7 +112,6 @@ void search(void) {
                     }
                     r_pt = r_pt->next;
                 }
-                
             }
             d_pt = d_pt->next;
         }
