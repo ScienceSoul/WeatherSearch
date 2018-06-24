@@ -235,7 +235,7 @@ record * _Nullable getQueries(const char * _Nonnull keyword) {
             idx++;
             if (ch == '{' && !first_character) {
                 memset(str, 0, sizeof(str));
-                memcpy(str, buff, 5);
+                memcpy(str, buff, strlen(keyword));
                 if (strcmp(str, keyword) != 0) {
                     fatal(PROGRAM_NAME, "incorrect keyword for query definition. Should be <query>.");
                 }
